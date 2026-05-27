@@ -1,0 +1,22 @@
+services:
+  # 1. LIVE PRODUCTION POSTGRESQL INSTANCE CONFIGS
+  - type: web
+    name: hireai-backend
+    runtime: python
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate"
+    startCommand: "gunicorn core.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        value: "AIzaSyBJAnbolykTy_JH-JfIzJfW_aDZVzweESk"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hireai-db
+          property: connectionString
+
+databases:
+  - name: hireai-db
+    plan: free
